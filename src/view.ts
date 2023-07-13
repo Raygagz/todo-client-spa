@@ -1,7 +1,7 @@
 namespace View {
     import ToDoItem = Model.ToDoItem;
 
-    function buildItemList(items: Array<ToDoItem>, container: HTMLElement) {
+    export function buildItemList(items: Array<ToDoItem>, container: HTMLElement) {
         for (const item of items) {
             const template = document.getElementById('list-item-template') as HTMLTemplateElement;
             const clone = template.content.cloneNode(true) as DocumentFragment;
@@ -20,3 +20,15 @@ namespace View {
         }
     }
 }
+
+async function main() {
+    const dao = new Model.ToDoItemDAO();
+    
+    const items = await dao.listAll();
+    const container = document.getElementById('newest-content');
+
+    if (container)
+        View.buildItemList(items, container);
+}
+
+main().then();
