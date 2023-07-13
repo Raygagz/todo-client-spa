@@ -18,6 +18,7 @@ var Model;
             this.description = '';
         }
     }
+    Model.ToDoItem = ToDoItem;
     class ToDoItemDAO {
         listAll() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -36,11 +37,3 @@ var Model;
     }
     Model.ToDoItemDAO = ToDoItemDAO;
 })(Model || (Model = {}));
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const dao = new Model.ToDoItemDAO();
-        const result = yield dao.listAll();
-        console.log(result);
-    });
-}
-main().then();
