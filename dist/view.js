@@ -83,4 +83,14 @@ var View;
         }
     }
     View.OldestView = OldestView;
+    class AddView {
+        constructor(container) {
+            this.container = container;
+            this.modal = new bootstrap.Modal(container);
+        }
+        render() {
+            this.modal.show();
+        }
+    }
+    View.AddView = AddView;
 })(View || (View = {}));

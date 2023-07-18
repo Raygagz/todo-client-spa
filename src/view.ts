@@ -1,5 +1,6 @@
 namespace View {
     import ToDoItem = Model.ToDoItem;
+    declare var bootstrap: any;
 
     interface View {
         render(): void;
@@ -95,6 +96,20 @@ namespace View {
         render(): void {
             const sortedItems = this.items.sort(dateAscComparator);
             this.buildItemList(sortedItems, this.container);
+        }
+    }
+
+    export class AddView implements View {
+        private container: HTMLElement;
+        private modal: any;
+
+        constructor(container: HTMLElement) {
+            this.container = container;
+            this.modal = new bootstrap.Modal(container);
+        }
+
+        render(): void {
+            this.modal.show();
         }
     }
 }
