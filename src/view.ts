@@ -27,13 +27,20 @@ namespace View {
         return 0
     }
 
-    export class NewestView extends TabView {
-        render(): void {
-            const sortedItems = this.items.sort(dateDescComparator);
-            this.buildItemList(sortedItems, this.container);
-        }
+    function dateAscComparator(a: ToDoItem, b: ToDoItem): number {
+        const dateA = Date.parse(a.deadline ?? '');
+        const dateB = Date.parse(b.deadline ?? '');
 
-        private buildItemList(items: Array<ToDoItem>, container: HTMLElement) {
+        if (dateA && dateB) return dateB < dateA ? -1 : 1;
+        if (dateA) return -1;
+        if (dateB) return 1;
+        return 0
+    }
+
+    abstract class ListView extends TabView {
+        abstract render(): void;
+
+        protected buildItemList(items: Array<ToDoItem>, container: HTMLElement) {
             for (const item of items) {
                 const template = document.getElementById('list-item-template') as HTMLTemplateElement;
                 const clone = template.content.cloneNode(true) as DocumentFragment;
@@ -77,16 +84,17 @@ namespace View {
         }
 
     }
+
+    export class NewestView extends ListView {
+        render(): void {
+            const sortedItems = this.items.sort(dateDescComparator);
+            this.buildItemList(sortedItems, this.container);
+        }
+    }
+    export class OldestView extends ListView {
+        render(): void {
+            const sortedItems = this.items.sort(dateAscComparator);
+            this.buildItemList(sortedItems, this.container);
+        }
+    }
 }
-
-async function main() {
-    const dao = new Model.ToDoItemDAO();
-    
-    const items = await dao.listAll();
-    const container = document.getElementById('newest-content');
-
-    if (container)
-        new View.NewestView(items, container).render();
-}
-
-main().then();

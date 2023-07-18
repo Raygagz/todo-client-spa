@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var View;
 (function (View) {
     class TabView {
@@ -28,11 +19,19 @@ var View;
             return 1;
         return 0;
     }
-    class NewestView extends TabView {
-        render() {
-            const sortedItems = this.items.sort(dateDescComparator);
-            this.buildItemList(sortedItems, this.container);
-        }
+    function dateAscComparator(a, b) {
+        var _a, _b;
+        const dateA = Date.parse((_a = a.deadline) !== null && _a !== void 0 ? _a : '');
+        const dateB = Date.parse((_b = b.deadline) !== null && _b !== void 0 ? _b : '');
+        if (dateA && dateB)
+            return dateB < dateA ? -1 : 1;
+        if (dateA)
+            return -1;
+        if (dateB)
+            return 1;
+        return 0;
+    }
+    class ListView extends TabView {
         buildItemList(items, container) {
             var _a, _b;
             for (const item of items) {
@@ -70,15 +69,18 @@ var View;
             }
         }
     }
+    class NewestView extends ListView {
+        render() {
+            const sortedItems = this.items.sort(dateDescComparator);
+            this.buildItemList(sortedItems, this.container);
+        }
+    }
     View.NewestView = NewestView;
+    class OldestView extends ListView {
+        render() {
+            const sortedItems = this.items.sort(dateAscComparator);
+            this.buildItemList(sortedItems, this.container);
+        }
+    }
+    View.OldestView = OldestView;
 })(View || (View = {}));
-function main() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const dao = new Model.ToDoItemDAO();
-        const items = yield dao.listAll();
-        const container = document.getElementById('newest-content');
-        if (container)
-            new View.NewestView(items, container).render();
-    });
-}
-main().then();
